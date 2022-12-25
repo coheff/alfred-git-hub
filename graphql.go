@@ -12,6 +12,8 @@ import (
 
 const endpoint = "https://api.github.com/graphql"
 
+var limit = wf.Config.Get("limit")
+
 type SearchResult struct {
 	Data struct {
 		Search struct {
@@ -24,8 +26,8 @@ type SearchResult struct {
 }
 
 func search(q string) SearchResult {
-	var searchRepos = `{"query":"query{search(query:\"%s\",type:REPOSITORY,last:100){nodes{...on Repository{name url}}}}"`
-	return query(fmt.Sprintf(searchRepos, q))
+	var searchRepos = `{"query":"query{search(query:\"%s\",type:REPOSITORY,last:%s){nodes{...on Repository{name url}}}}"`
+	return query(fmt.Sprintf(searchRepos, q, limit))
 }
 
 // query makes a post request to GitHub's GraphQL endpoint
