@@ -7,5 +7,5 @@ import (
 var wf *aw.Workflow = aw.New()
 
 func main() {
-	wf.Run(run)
+	wf.Run(Run)
 }

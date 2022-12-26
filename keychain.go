@@ -12,7 +12,7 @@ const key = "token"
 var kc = keychain.New("alfred-git-hub")
 
 // cacheToken adds a token to Keychain. If a token already exists, it is replaced.
-func cacheToken(tok *oauth2.Token) error {
+func CacheToken(tok *oauth2.Token) error {
 	jToken, err := json.Marshal(tok)
 	if err != nil {
 		return err
@@ -26,7 +26,7 @@ func cacheToken(tok *oauth2.Token) error {
 }
 
 // cachedToken retrieves a token from Keychain.
-func cachedToken() (*oauth2.Token, error) {
+func CachedToken() (*oauth2.Token, error) {
 	jToken, err := kc.Get(key)
 	if err != nil {
 		return nil, err
