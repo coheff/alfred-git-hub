@@ -17,5 +17,7 @@ In order to use this workflow you _**MUST**_ create your own GitHub OAuth2 app a
 - Trigger a repository search using the keyword `gh` followed by a search query.
 - Check out the GitHub documentaion for query syntax - here's a [cheatsheet](https://gist.github.com/bonniss/4f0de4f599708c5268134225dda003e0).
 
+![Screen Recording 2022-12-26 at 15 12 09](https://user-images.githubusercontent.com/11773454/209565558-fc5d9661-562a-4d16-9093-5424591fc883.gif)
+
 # License
 Distributed under the MIT License. See [LICENSE](https://github.com/coheff/alfred-git-hub/blob/main/LICENSE) for more information.
