@@ -1,5 +1,5 @@
 # alfred-git-hub
-An Alfred GitHub workflow powered by Go. Search is currently limited to repositories (release v0.1.0) for now. Support for more [SearchTypes](https://docs.github.com/en/graphql/reference/enums#searchtype) will be added later.
+An Alfred GitHub workflow powered by Go.
 
 # Download
 Grab the the latest version from the [releases page](https://github.com/coheff/alfred-git-hub/releases/tag/v0.1.0). Double click workflow file to import into Alfred.
@@ -14,8 +14,9 @@ In order to use this workflow you _**MUST**_ create your own GitHub OAuth2 app a
 <img width="1008" alt="Screenshot 2022-12-26 at 15 00 54" src="https://user-images.githubusercontent.com/11773454/209561665-c661efba-4716-453c-9ca5-f92b04588957.png">
 
 # Usage
-- Trigger a repository search using the keyword `gh` followed by a search query.
+- Trigger a search using the keyword `gh` and selecting either `issues` or `repositories` followed by a search query.
 - Check out the GitHub documentaion for query syntax - here's a [cheatsheet](https://gist.github.com/bonniss/4f0de4f599708c5268134225dda003e0).
+    - Pull requests can be searched for using the `issues` workflow and the `is:pr` keyword.
 
 <img width="1008" alt="Screen Recording 2022-12-26 at 15 12 09" src="https://user-images.githubusercontent.com/11773454/209565558-fc5d9661-562a-4d16-9093-5424591fc883.gif">
 
