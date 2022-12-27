@@ -9,17 +9,24 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	ac "github.com/coheff/al-co"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/github"
 )
 
 const endpoint = "https://api.github.com/graphql"
 
-var limit = wf.Config.Get("limit")
-
-type SearchResult struct {
-	Title    string
-	Subtitle string
-	Arg      string
-}
+var (
+	config = &oauth2.Config{
+		ClientID:     Wf.Config.Get("client_id"),
+		ClientSecret: Wf.Config.Get("client_secret"),
+		Endpoint:     github.Endpoint,
+		RedirectURL:  "http://127.0.0.1:1337/callback",
+		Scopes:       []string{"user"},
+	}
+	limit = Wf.Config.Get("limit")
+)
 
 // generated using https://transform.tools/json-to-go
 type issueSearchResult struct {
@@ -54,7 +61,7 @@ type repoSearchResult struct {
 
 // search searches issues or repositories using GitHub's GraphQL endpoint
 // for a given query.
-func Search(q string) []*SearchResult {
+func Search(q string) []*Result {
 	typeAndQuery := strings.Split(q, "§")
 
 	switch typeAndQuery[0] {
@@ -63,13 +70,13 @@ func Search(q string) []*SearchResult {
 	case "REPOSITORY":
 		return searchRepos(typeAndQuery[1])
 	default:
-		return []*SearchResult{}
+		return []*Result{}
 	}
 }
 
 // searchIssues builds a query for searching issues.
 // Results are deserialized and returned as a SearchResult.
-func searchIssues(q string) []*SearchResult {
+func searchIssues(q string) []*Result {
 	var gqlFormat = `{"query":"query{search(query:\"%s\",type:ISSUE,last:%s){nodes{...on Issue{title url createdAt author{login}repository{name}}...on PullRequest{title url createdAt author{login}repository{name}}}}}"`
 	q = strings.Replace(q, "ISSUE", "", 1)
 	bodyBytes := query(fmt.Sprintf(gqlFormat, q, limit))
@@ -78,11 +85,11 @@ func searchIssues(q string) []*SearchResult {
 	var issues issueSearchResult
 	json.Unmarshal(bodyBytes, &issues)
 
-	var results []*SearchResult
+	var results []*Result
 	for _, issue := range issues.Data.Search.Nodes {
 		results = append(
 			results,
-			&SearchResult{
+			&Result{
 				issue.Title,
 				issue.Author.Login + " | " + issue.CreatedAt + " | " + issue.Repository.Name,
 				issue.URL,
@@ -95,7 +102,7 @@ func searchIssues(q string) []*SearchResult {
 
 // searchRepos builds a query for searching repositories.
 // Results are deserialized and returned as a SearchResult.
-func searchRepos(q string) []*SearchResult {
+func searchRepos(q string) []*Result {
 	var gqlFormat = `{"query":"query{search(query:\"%s\",type:REPOSITORY,last:%s){nodes{...on Repository{name url}}}}"`
 	q = strings.Replace(q, "REPOSITORY", "", 1)
 	bodyBytes := query(fmt.Sprintf(gqlFormat, q, limit))
@@ -104,11 +111,11 @@ func searchRepos(q string) []*SearchResult {
 	var repos repoSearchResult
 	json.Unmarshal(bodyBytes, &repos)
 
-	var results []*SearchResult
+	var results []*Result
 	for _, repo := range repos.Data.Search.Nodes {
 		results = append(
 			results,
-			&SearchResult{
+			&Result{
 				repo.Name,
 				repo.URL,
 				repo.URL,
@@ -123,18 +130,18 @@ func searchRepos(q string) []*SearchResult {
 // for a given query, using a cached or new oauth token.
 func query(q string) []byte {
 	// get cached token
-	tok, err := CachedToken()
+	tok, err := ac.CachedToken(Kc)
 	if err != nil {
 		log.Printf("Error retrieving cached token; it might not exist: %v", err)
 
 		// get new token
-		tok, err = newToken()
+		tok, err = ac.NewToken(config)
 		if err != nil {
 			log.Fatalf("Error aquiring token: %v", err)
 		}
 
 		// store token
-		err = CacheToken(tok)
+		err = ac.CacheToken(Kc, tok)
 		if err != nil {
 			log.Fatalf("Error storing token: %v", err)
 		}

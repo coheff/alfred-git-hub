@@ -4,8 +4,8 @@ import (
 	aw "github.com/deanishe/awgo"
 )
 
-var wf *aw.Workflow = aw.New()
+var Wf *aw.Workflow = aw.New()
 
 func main() {
-	wf.Run(Run)
+	Wf.Run(Run)
 }
