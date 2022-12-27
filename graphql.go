@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -148,11 +147,11 @@ func query(q string) []byte {
 	}
 
 	// build request
-	req, err := http.NewRequest("POST", endpoint, bytes.NewBuffer([]byte(q)))
+	req, err := http.NewRequest("POST", endpoint, strings.NewReader(q))
 	if err != nil {
 		log.Fatalf("Error building request: %v", err)
 	}
-	req.Header.Set("Authorization", "bearer "+tok.AccessToken)
+	req.Header.Add("Authorization", "bearer "+tok.AccessToken)
 
 	// make request
 	var client = http.Client{Timeout: time.Second * 10}
