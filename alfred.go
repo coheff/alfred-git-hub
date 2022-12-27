@@ -15,8 +15,7 @@ func Run() {
 
 	// search github for repositories e.g. "alfred in:name user:coheff"
 	// or issues/pull requests e.g. "java is:pr is:merged"
-	results := Search(q)
-	for _, result := range results {
+	for _, result := range Search(q) {
 		Wf.
 			NewItem(result.Title).
 			Subtitle(result.Subtitle).
