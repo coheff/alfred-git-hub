@@ -2,7 +2,7 @@ package main
 
 import "github.com/deanishe/awgo/keychain"
 
-var Kc = keychain.New("alfred-" + Wf.BundleID())
+var Kc = keychain.New(Wf.BundleID())
 
 type Result struct {
 	Title    string
