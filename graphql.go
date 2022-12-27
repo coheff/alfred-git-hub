@@ -128,23 +128,8 @@ func searchRepos(q string) []*Result {
 // query makes a post request to GitHub's GraphQL endpoint
 // for a given query, using a cached or new oauth token.
 func query(q string) []byte {
-	// get cached token
-	tok, err := ac.CachedToken(Kc)
-	if err != nil {
-		log.Printf("Error retrieving cached token; it might not exist: %v", err)
-
-		// get new token
-		tok, err = ac.NewToken(config)
-		if err != nil {
-			log.Fatalf("Error aquiring token: %v", err)
-		}
-
-		// store token
-		err = ac.CacheToken(Kc, tok)
-		if err != nil {
-			log.Fatalf("Error storing token: %v", err)
-		}
-	}
+	// get token
+	tok := ac.Token(config, Kc)
 
 	// build request
 	req, err := http.NewRequest("POST", endpoint, strings.NewReader(q))
